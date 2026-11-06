@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Self-Healing Linux Dashboard</title>
+
+    <meta http-equiv="refresh" content="5">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+
+        body{
+            font-family:Arial, sans-serif;
+            background:#f4f6f9;
+            margin:20px;
+            text-align:center;
+        }
+
+        h1{
+            color:#333;
+        }
+
+        .container{
+            display:flex;
+            flex-wrap:wrap;
+            justify-content:center;
+        }
+
+        .card{
+            background:white;
+            width:280px;
+            margin:10px;
+            padding:20px;
+            border-radius:15px;
+            box-shadow:0px 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .health{
+            font-size:40px;
+            font-weight:bold;
+        }
+
+        .wide-card{
+            background:white;
+            width:90%;
+            margin:20px auto;
+            padding:20px;
+            border-radius:15px;
+            box-shadow:0px 4px 8px rgba(0,0,0,0.2);
+        }
+
+        pre{
+            text-align:left;
+            white-space:pre-wrap;
+            word-wrap:break-word;
+        }
+
+        canvas{
+            max-width:100%;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <h1>🚀 Self-Healing Linux Infrastructure Dashboard</h1>
+
+    <div class="container">
+
+        <div class="card">
+            <h2>System Health</h2>
+            <div class="health" style="color:{{ health_color }}">
+                {{ health_score }}/100
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>CPU Usage</h2>
+            <h1>{{ cpu }}%</h1>
+        </div>
+
+        <div class="card">
+            <h2>Memory Usage</h2>
+            <h1>{{ memory }}%</h1>
+        </div>
+
+        <div class="card">
+            <h2>Disk Usage</h2>
+            <h1>{{ disk }}%</h1>
+        </div>
+
+        <div class="card">
+            <h2>System Uptime</h2>
+            <h1>{{ uptime_hours }} hrs</h1>
+        </div>
+
+    </div>
+
+    <div class="wide-card">
+        <h2>🖥 Service Status</h2>
+
+        {% for service, status in service_status.items() %}
+
+        <p>
+            <strong>{{ service }}</strong> :
+            {{ status }}
+        </p>
+
+        {% endfor %}
+
+    </div>
+
+    <div class="wide-card">
+        <h2>🔧 Last Self-Healing Action</h2>
+        <p>{{ last_action }}</p>
+    </div>
+
+    <div class="wide-card">
+        <h2>🚨 Recent Alerts</h2>
+        <pre>{{ alerts }}</pre>
+    </div>
+
+    <div class="wide-card">
+        <h2>📈 CPU Usage Trend</h2>
+        <canvas id="cpuChart"></canvas>
+    </div>
+
+    <div class="wide-card">
+        <h2>📈 Memory Usage Trend</h2>
+        <canvas id="memoryChart"></canvas>
+    </div>
+
+    <div class="wide-card">
+        <h2>📈 Disk Usage Trend</h2>
+        <canvas id="diskChart"></canvas>
+    </div>
+
+<script>
+
+new Chart(document.getElementById("cpuChart"), {
+
+    type: "line",
+
+    data: {
+
+        labels: [1,2,3,4,5,6,7,8,9,10],
+
+        datasets: [{
+
+            label: "CPU Usage %",
+
+            data: {{ cpu_data|tojson }}
+
+        }]
+    }
+});
+
+new Chart(document.getElementById("memoryChart"), {
+
+    type: "line",
+
+    data: {
+
+        labels: [1,2,3,4,5,6,7,8,9,10],
+
+        datasets: [{
+
+            label: "Memory Usage %",
+
+            data: {{ memory_data|tojson }}
+
+        }]
+    }
+});
+
+new Chart(document.getElementById("diskChart"), {
+
+    type: "line",
+
+    data: {
+
+        labels: [1,2,3,4,5,6,7,8,9,10],
+
+        datasets: [{
+
+            label: "Disk Usage %",
+
+            data: {{ disk_data|tojson }}
+
+        }]
+    }
+});
+
+</script>
+
+</body>
+
+</html>
